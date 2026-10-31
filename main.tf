@@ -54,3 +54,28 @@ resource "azurerm_subnet" "GATE" {
     address_prefixes = ["10.20.2.0/28"]
   
 }
+resource "azurerm_virtual_network" "Vnet2"{
+    name = "Vnetlab2"
+    resource_group_name = azurerm_resource_group.rg.name
+    location            = azurerm_resource_group.rg.location
+    address_space = ["10.30.0.0/16"]
+}
+resource "azurerm_subnet" "subnet21"{
+    name = "subnet21"
+    resource_group_name = azurerm_resource_group.rg.name
+    virtual_network_name = azurerm_virtual_network.Vnet2.name
+    address_prefixes = ["10.30.0.0/24"]
+}
+resource "azurerm_virtual_network_peering" "peer1to2"{
+    name = "Vnet1ToVnet2"
+    resource_group_name = azurerm_resource_group.rg.name
+    virtual_network_name = azurerm_virtual_network.Vnet1.name
+    remote_virtual_network_id = azurerm_virtual_network.Vnet2.id
+}
+resource "azurerm_virtual_network_peering" "peer2to1"{
+    name = "v2to1"
+    resource_group_name = azurerm_resource_group.rg.name
+    virtual_network_name = azurerm_virtual_network.Vnet2.name
+    remote_virtual_network_id = azurerm_virtual_network.Vnet1.id
+
+}
